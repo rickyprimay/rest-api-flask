@@ -4,6 +4,10 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
+@app.route("/")
+def index():
+    return "This is Restful API"
+
 api = Api(app)
 
 CORS(app)
