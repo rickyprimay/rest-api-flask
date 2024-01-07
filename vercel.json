@@ -1,9 +1,14 @@
 {
-    "functions": {
-      "api/app.py": {
-        "runtime": "python.3.11",
-        "includeFiles": "requirements.txt"
-      }
-    }
-  }
-  
+    "builds":[
+        {
+            "src":"api/app.py",
+            "use":"@vercel/python"
+        }
+    ],
+    "routes":[
+        {
+            "src":"/(.*)",
+            "dest":"api/"
+        }
+    ]
+}
