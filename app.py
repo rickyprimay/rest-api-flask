@@ -40,6 +40,7 @@ class ExampleResource(Resource):
         query = ModelDb.query.all()
         output = [
             {
+                "id": data.id,
                 "name": data.name, 
                 "age": data.age, 
                 "address": data.address
@@ -69,8 +70,64 @@ class ExampleResource(Resource):
         }
 
         return response
+    def delete(self):
+        query = ModelDb.query.all()
+        for data in query:
+            db.session.delete(data)
+            db.session.commit()
+        response = {
+            "msg": "Delete all data success",
+            "code": "200"
+        }
+        return response
+    
 
-api.add_resource(ExampleResource, "/api", methods=["GET", "POST"])
+class UpdateResource(Resource):
+    def put(self, id):
+        query = ModelDb.query.get(id)
+
+        if query is None:
+            response = {
+                "msg": "Data Not Found",
+                "code": "404"
+            }
+            return response
+
+        editName = request.form['name']
+        editAge = request.form['age']
+        editAddress = request.form['address']
+
+        query.name = editName
+        query.age = editAge
+        query.address = editAddress
+        db.session.commit()
+
+        response = {
+            "msg" : "edit data success",
+            "code" : "200"
+        }
+
+        return response
+    def delete(self, id):
+        query = ModelDb.query.get(id)
+        if query is None:
+            response = {
+                "msg": "Data Not Found",
+                "code": "404"
+            }
+            return response
+
+        db.session.delete(query)
+        db.session.commit()
+
+        response = {
+            "msg" : "Delete data success",
+            "code" : "200"
+        }
+        return response
+
+api.add_resource(ExampleResource, "/api", methods=["GET", "POST", "DELETE"])
+api.add_resource(UpdateResource, "/api/<id>", methods=["PUT", "DELETE"])
 
 if __name__ == "__main__":
     with app.app_context():
